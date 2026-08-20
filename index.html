@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de tarifas - Conciliación</title>
+    <link rel="icon" href="icon.ico" type="image/x-icon">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #fff;
+            color: #111;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            background: #70b247;
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+            font-style: normal;
+            font-weight: 700;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 15px;
+        }
+
+        /* =========================
+           CONTENIDO
+        ========================= */
+
+        .contenido {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 35px 20px;
+        }
+
+        .contenedor {
+            width: min(790px, 100%);
+            min-height: 520px;
+            border: 1.5px solid #69ad3e;
+            border-radius: 95px 95px 55px 55px;
+            padding: 5px 84px 24px;
+            position: relative;
+        }
+
+        .encabezado {
+            text-align: center;
+            background: transparent;
+            color: #111;
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .encabezado h2 {
+            margin: 0 0 27px;
+            font-size: 25px;
+            font-style: italic;
+            font-weight: 700;
+        }
+
+        .instruccion {
+            color: #00a651;
+            font-size: 14px;
+            font-style: italic;
+            margin: 0 0 19px;
+        }
+
+        .calculadora {
+            width: 100%;
+        }
+
+        .fila {
+            display: grid;
+            grid-template-columns: 1fr 258px;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .etiqueta {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .campo {
+            width: 100%;
+            height: 28px;
+            border: 0;
+            padding: 3px 8px;
+            font-size: 19px;
+            font-weight: 700;
+            text-align: right;
+            background: #70b247;
+            outline: none;
+        }
+
+        .campo:focus {
+            box-shadow: inset 0 0 0 2px #2f7f1f;
+        }
+
+        .porcentaje {
+            background: #bfc0c2;
+            height: 21px;
+            font-size: 13px;
+            padding: 2px 7px;
+        }
+
+        .resultado {
+            display: grid;
+            grid-template-columns: 30px 1fr;
+            width: 258px;
+            height: 47px;
+            margin-left: auto;
+            border: 2px solid #278a45;
+            background: #c7c8ca;
+            align-items: center;
+            padding: 0 7px;
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        .resultado .simbolo {
+            text-align: left;
+        }
+
+        .resultado .valor {
+            text-align: right;
+        }
+
+        .tabla {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 7px;
+            font-size: 13px;
+        }
+
+        .tabla th,
+        .tabla td {
+            border: 1px solid #111;
+            padding: 3px;
+            height: 20px;
+        }
+
+        .tabla th {
+            font-weight: 400;
+            text-align: left;
+        }
+
+        .tabla td:nth-child(2) {
+            text-align: right;
+            width: 115px;
+        }
+
+        .tabla td:nth-child(3) {
+            text-align: right;
+            width: 215px;
+        }
+
+        .tabla .ultima td {
+            height: 36px;
+        }
+
+        .nota {
+            margin-top: 10px;
+            font-size: 11px;
+            color: #555;
+            text-align: right;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+            margin-top: auto;
+        }
+
+        footer p {
+            margin: 8px 0;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        footer a {
+            color: #70b247;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 650px) {
+
+            header {
+                padding: 20px 15px;
+            }
+
+            header h1 {
+                font-size: 23px;
+            }
+
+            header p {
+                font-size: 13px;
+            }
+
+            .contenido {
+                padding: 20px 8px;
+            }
+
+            .contenedor {
+                border-radius: 35px;
+                padding: 15px 18px 25px;
+            }
+
+            .encabezado h2 {
+                font-size: 21px;
+                margin-bottom: 22px;
+            }
+
+            .fila {
+                grid-template-columns: 1fr;
+                gap: 7px;
+                margin-bottom: 16px;
+            }
+
+            .campo,
+            .resultado {
+                width: 100%;
+            }
+
+            .resultado {
+                margin-left: 0;
+            }
+
+            .tabla {
+                font-size: 11px;
+            }
+
+            .tabla th,
+            .tabla td {
+                padding: 3px 2px;
+            }
+
+            footer {
+                padding: 20px 15px;
+            }
+
+            footer p {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header>
+        <h1>Cámara de Comercio del Chocó</h1>
+        <p>Impulsando el desarrollo empresarial y económico de la región</p>
+    </header>
+
+
+    <!-- =========================
+         CALCULADORA
+    ========================= -->
+
+    <main class="contenido">
+
+        <div class="contenedor">
+
+            <section class="encabezado">
+              <img class="logo" src="logo.png" alt="">
+                <h2>Calculadora de tarifas - Conciliación</h2>
+            </section>
+
+            <main class="calculadora">
+
+                <p class="instruccion">
+                    * Ingrese solo la información de las casillas verde:
+                </p>
+
+                <div class="fila">
+
+                    <label class="etiqueta" for="cuantia">
+                        INGRESE CUANTÍA DEL CASO:
+                    </label>
+
+                    <input
+                        id="cuantia"
+                        class="campo"
+                        type="text"
+                        inputmode="decimal"
+                        value="0"
+                    >
+
+                </div>
+
+
+                <div class="fila">
+
+                    <div class="etiqueta">
+                        Porcentaje aplicado
+                    </div>
+
+                    <input
+                        id="porcentaje"
+                        class="campo porcentaje"
+                        type="text"
+                        value="0%"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div
+                    class="fila"
+                    style="margin-top: 4px; margin-bottom: 18px;"
+                >
+
+                    <div class="etiqueta">
+                        TARIFA INICIAL
+                    </div>
+
+                    <div class="resultado">
+
+                        <span class="simbolo">$</span>
+
+                        <span id="resultado" class="valor">
+                            $ 0
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <table class="tabla">
+
+                    <thead>
+                        <tr>
+                            <th>CUANTIA EN PESO $</th>
+                            <th>TARIFA UVT</th>
+                            <th>TOTAL IVA INCLUIDO</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>$0 - $9.958.570,39</td>
+                            <td>7,51%</td>
+                            <td>$ 423.222,00</td>
+                        </tr>
+
+                        <tr>
+                            <td>$9.958.570,39 - $16.224.707,84</td>
+                            <td>9,84%</td>
+                            <td>$ 554,53</td>
+                        </tr>
+
+                        <tr>
+                            <td>$16.224.707,84 - $21.240.133,59</td>
+                            <td>11,75%</td>
+                            <td>$ 662,16</td>
+                        </tr>
+
+                        <tr>
+                            <td>$21.240.133,59 - $43.597.906,43</td>
+                            <td>14,90%</td>
+                            <td>$ 839,68</td>
+                        </tr>
+
+                        <tr>
+                            <td>$43.597.906 - $64.939.662,58</td>
+                            <td>17,52%</td>
+                            <td>$ 987,33</td>
+                        </tr>
+
+                        <tr>
+                            <td>mas de $64.939.662,58</td>
+                            <td>1,8%</td>
+                            <td></td>
+                        </tr>
+
+                        <tr class="ultima">
+                            <td>INDETERMINADA SIN CUANTIA</td>
+                            <td>10,68%</td>
+                            <td>$ 601,87</td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+                <div class="nota">
+                    Los valores de tarifa se calculan según los rangos mostrados en la tabla.
+                </div>
+
+            </main>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
+    <footer>
+
+        <p>
+            &copy; 2025 Cámara de Comercio del Chocó.
+            Todos los derechos reservados.
+        </p>
+
+        <p>
+            Visítanos en nuestras oficinas en Quibdó e Istmina.
+            <br>
+
+            <a href="https://camarachoco.org.co/contactenos/">Contáctanos</a>
+        </p>
+
+        <p>
+            <br>
+
+            <a href="mailto:elkin10cuesta@gmail.com">
+                Elaborado por Elkin Daniel Cuesta M.
+            </a>
+
+        </p>
+
+    </footer>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
+    <script>
+
+        (() => {
+
+            const cuantiaInput =
+                document.getElementById("cuantia");
+
+            const porcentajeInput =
+                document.getElementById("porcentaje");
+
+            const resultado =
+                document.getElementById("resultado");
+
+
+            const rangos = [
+
+                {
+                    max: 9958570.39,
+                    tarifa: 0.0751
+                },
+
+                {
+                    max: 16224707.84,
+                    tarifa: 0.0984
+                },
+
+                {
+                    max: 21240133.59,
+                    tarifa: 0.1175
+                },
+
+                {
+                    max: 43597906.43,
+                    tarifa: 0.1490
+                },
+
+                {
+                    max: 64939662.58,
+                    tarifa: 0.1752
+                }
+
+            ];
+
+
+            function parseNumero(texto) {
+
+                if (!texto) return 0;
+
+                let s = String(texto)
+                    .trim()
+                    .replace(/\s/g, "");
+
+
+                if (s.includes(",")) {
+
+                    s = s
+                        .replace(/\./g, "")
+                        .replace(",", ".");
+
+                } else {
+
+                    const puntos =
+                        (s.match(/\./g) || []).length;
+
+                    if (puntos > 1) {
+                        s = s.replace(/\./g, "");
+                    }
+
+                }
+
+
+                const numero = Number(s);
+
+                return Number.isFinite(numero)
+                    ? numero
+                    : 0;
+
+            }
+
+
+            function formatoMoneda(valor) {
+
+                return new Intl.NumberFormat("es-CO", {
+
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+
+                }).format(Math.round(valor));
+
+            }
+
+
+            function calcular() {
+
+                const cuantia =
+                    parseNumero(cuantiaInput.value);
+
+
+                if (cuantia <= 0) {
+
+                    porcentajeInput.value = "0,00%";
+
+                    resultado.textContent = "$ 0";
+
+                    return;
+
+                }
+
+
+                let tarifa = 0.018;
+
+
+                for (const rango of rangos) {
+
+                    if (cuantia <= rango.max) {
+
+                        tarifa = rango.tarifa;
+
+                        break;
+
+                    }
+
+                }
+
+
+                porcentajeInput.value =
+                    (tarifa * 100)
+                    .toFixed(2)
+                    .replace(".", ",") + "%";
+
+
+                const total =
+                    cuantia * tarifa;
+
+
+                resultado.textContent =
+                    "$ " + formatoMoneda(total);
+
+            }
+
+
+            cuantiaInput.addEventListener(
+                "input",
+                calcular
+            );
+
+            cuantiaInput.addEventListener(
+                "change",
+                calcular
+            );
+
+
+            calcular();
+
+        })();
+
+    </script>
+
+</body>
+</html>
